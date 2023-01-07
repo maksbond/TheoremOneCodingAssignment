@@ -1,2 +1,6 @@
+# Xcode files
 xcuserdata/
+!xcshareddata
+
+# System files
 .DS_Store
