@@ -8,39 +8,18 @@
 import UIKit
 import os.log
 
-class PostsTableViewController: UIViewController {
+class PostsTableViewController: BaseTableViewController {
     // Network Manager
     private var networkManager: NetworkManager!
-    
-    // Log object to identify place of call
-    private var log: OSLog!
 
     // Data source for posts
     private var postsDataSource: PostsDataSource!
 
-    lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: view.bounds, style: .insetGrouped)
-        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tableView.delegate = self.postsDataSource
-        tableView.dataSource = self.postsDataSource
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: PostsDataSource.cellIdentifier)
-        tableView.translatesAutoresizingMaskIntoConstraints = true
-        return tableView
-    }()
-
-    lazy var loadingIndicator: UIActivityIndicatorView = {
-        var loadingIndicator = UIActivityIndicatorView(style: .large)
-        loadingIndicator.color = .gray
-        loadingIndicator.isHidden = true
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.center = view.center
-        return loadingIndicator
-    }()
+    // MARK: - Initializers
     
     init(networkManager: NetworkManager) {
-        super.init(nibName: nil, bundle: nil)
+        super.init()
         self.networkManager = networkManager
-        self.log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "PostsTableViewController")
         postsDataSource = PostsDataSource(networkManager: networkManager)
         postsDataSource.delegate = self
     }
@@ -48,12 +27,11 @@ class PostsTableViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - Lify-cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        setupUI()
-        setupNavigationBar()
         postsDataSource.fetchPosts()
     }
     
@@ -61,27 +39,22 @@ class PostsTableViewController: UIViewController {
         postsDataSource = nil
         networkManager = nil
     }
-}
-
-// MARK: - UI setup methods
-
-private extension PostsTableViewController {
-    func setupUI() {
-        view.addSubview(tableView)
-        view.addSubview(loadingIndicator)
-
-        // Add constraints
-        NSLayoutConstraint.activate([
-            // table view
-            view.leftAnchor.constraint(equalTo: tableView.leftAnchor),
-            view.rightAnchor.constraint(equalTo: tableView.rightAnchor),
-            view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
-            view.topAnchor.constraint(equalTo: tableView.topAnchor)
-        ])
+    
+    // MARK: - Overrided methods
+    override func loggerCategory() -> String {
+        "PostsTableViewController"
     }
 
-    func setupNavigationBar() {
-        navigationItem.title = "Posts"
+    override func delegate() -> UITableViewDelegate? {
+        postsDataSource
+    }
+
+    override func dataSource() -> UITableViewDataSource? {
+        postsDataSource
+    }
+    
+    override func cellIdentifiers() -> [String : UITableViewCell.Type] {
+        [PostsDataSource.cellIdentifier: UITableViewCell.self]
     }
 }
 

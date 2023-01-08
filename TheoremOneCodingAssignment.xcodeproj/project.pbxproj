@@ -19,6 +19,8 @@
 		7A1876652969E7D800C55911 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1876642969E7D800C55911 /* Networking.swift */; };
 		7A18766B296A1C0400C55911 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18766A296A1C0400C55911 /* NetworkManager.swift */; };
 		7A18766E296B3BAF00C55911 /* PostsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A18766D296B3BAF00C55911 /* PostsDataSource.swift */; };
+		7A187672296B550100C55911 /* PostDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A187671296B550100C55911 /* PostDetailsDataSource.swift */; };
+		7A187675296B587C00C55911 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A187674296B587C00C55911 /* BaseTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		7A1876642969E7D800C55911 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		7A18766A296A1C0400C55911 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		7A18766D296B3BAF00C55911 /* PostsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsDataSource.swift; sourceTree = "<group>"; };
+		7A187671296B550100C55911 /* PostDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsDataSource.swift; sourceTree = "<group>"; };
+		7A187674296B587C00C55911 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +158,7 @@
 		7A1876682969E8AC00C55911 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				7A187673296B57D900C55911 /* Base */,
 				7A18762E2969D12B00C55911 /* PostsTableViewController.swift */,
 			);
 			path = Controller;
@@ -172,8 +177,17 @@
 			isa = PBXGroup;
 			children = (
 				7A18766D296B3BAF00C55911 /* PostsDataSource.swift */,
+				7A187671296B550100C55911 /* PostDetailsDataSource.swift */,
 			);
 			path = DataSource;
+			sourceTree = "<group>";
+		};
+		7A187673296B57D900C55911 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				7A187674296B587C00C55911 /* BaseTableViewController.swift */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A18762F2969D12B00C55911 /* PostsTableViewController.swift in Sources */,
+				7A187672296B550100C55911 /* PostDetailsDataSource.swift in Sources */,
 				7A1876612969E6F200C55911 /* Comment.swift in Sources */,
 				7A18762B2969D12A00C55911 /* AppDelegate.swift in Sources */,
 				7A18762D2969D12A00C55911 /* SceneDelegate.swift in Sources */,
@@ -284,6 +299,7 @@
 				7A18765F2969E20700C55911 /* User.swift in Sources */,
 				7A18765D2969E15A00C55911 /* Post.swift in Sources */,
 				7A1876652969E7D800C55911 /* Networking.swift in Sources */,
+				7A187675296B587C00C55911 /* BaseTableViewController.swift in Sources */,
 				7A18766E296B3BAF00C55911 /* PostsDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
