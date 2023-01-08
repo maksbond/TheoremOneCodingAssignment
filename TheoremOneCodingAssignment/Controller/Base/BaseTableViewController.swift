@@ -69,7 +69,6 @@ class BaseTableViewController: UIViewController {
     }
 
     internal func setupNavigationBar() {
-        navigationItem.title = "Posts"
     }
     
     // MARK: - Overridable functions

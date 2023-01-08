@@ -14,6 +14,7 @@ protocol PostsDataSourceDelegate: AnyObject {
     func showLoadingIndicator()
     func hideLoadingIndicator()
     func updatePresentedContent()
+    func presentDetails(for post: Post)
 }
 
 class PostsDataSource: NSObject {
@@ -36,7 +37,7 @@ class PostsDataSource: NSObject {
     }
     
     /// Fetch posts from API and call delegates methods in progress
-    func fetchPosts() {
+    public func fetchPosts() {
         Task(priority: .userInitiated) {
             do {
                 await self.delegate?.showLoadingIndicator()
@@ -63,7 +64,11 @@ class PostsDataSource: NSObject {
 }
 
 extension PostsDataSource: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        self.delegate?.presentDetails(for: post)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension PostsDataSource: UITableViewDataSource {
