@@ -9,5 +9,5 @@ protocol Networking {
     func fetchPosts() async throws -> [Post]
     func fetchUser(for post: Post) async throws -> User
     func fetchComments(for post: Post) async throws -> [Comment]
-    func deletePost(with id: UInt64) async throws
+    func delete(post: Post) async throws
 }
