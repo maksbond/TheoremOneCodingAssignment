@@ -126,7 +126,7 @@ private extension NetworkManager {
                 request.setValue(value, forHTTPHeaderField: key)
             }
         }
-        os_log(.info, log: log, "\nGenerated request: %@\nMethod: %@\nHeaders: %@\nBody: %@\n", request.url?.absoluteString ?? "", method.rawValue, request.allHTTPHeaderFields ?? [:], body == nil ? "nil" : "not nil")
+        os_log(.info, log: log, "\n++++++\nGenerated request: %{public}@\nMethod: %{public}@\nHeaders: %{public}@\nBody: %{public}@\n++++++\n", request.url?.absoluteString ?? "", method.rawValue, request.allHTTPHeaderFields ?? [:], body == nil ? "nil" : "not nil")
         return request
     }
 
@@ -136,7 +136,7 @@ private extension NetworkManager {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw NetworkManagerError.invalidResponseConverting
         }
-        os_log(.info, log: log, "\nRequest URL: %@\nResponse status code: %d\n", request.url?.absoluteString ?? "", httpResponse.statusCode)
+        os_log(.info, log: log, "\n++++++\nRequest URL: %{public}@\nResponse status code: %{public}d\n++++++\n", request.url?.absoluteString ?? "", httpResponse.statusCode)
         switch httpResponse.statusCode {
         case 200...299:
             break
@@ -154,7 +154,7 @@ private extension NetworkManager {
             let result = try JSONDecoder().decode(type, from: data)
             return result
         } catch {
-            throw NetworkManagerError.decodingError(error)
+            throw NetworkManagerError.decoding(error: error)
         }
     }
 }
@@ -167,7 +167,7 @@ extension NetworkManager {
         case invalidResponseConverting
         case invalidStatusCode
         case unauthorizedRequest
-        case decodingError(Error)
+        case decoding(error: Error)
 
         var description: String {
             switch self {
@@ -179,7 +179,7 @@ extension NetworkManager {
                 return "Unhandle HTTP status code"
             case .unauthorizedRequest:
                 return "Unauthorized request"
-            case .decodingError(let error):
+            case .decoding(let error):
                 return "Can't decode response data. Error: \(error.localizedDescription)"
             }
         }
