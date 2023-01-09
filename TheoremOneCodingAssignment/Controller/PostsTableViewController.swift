@@ -37,6 +37,7 @@ class PostsTableViewController: BaseTableViewController {
     
     override func setupNavigationBar() {
         navigationItem.title = "Posts"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(deleteUnfavorite))
     }
     
     deinit {
@@ -60,16 +61,28 @@ class PostsTableViewController: BaseTableViewController {
     override func cellIdentifiers() -> [String : UITableViewCell.Type] {
         [PostsDataSource.cellIdentifier: UITableViewCell.self]
     }
+    
+    // MARK: - Bar button actions
+    
+    @objc
+    func deleteUnfavorite() {
+        presentAlert(with: "Delete all unfavorite posts", message: "You will delete all unfavorite posts") { [weak self] in
+            self?.postsDataSource.deleteAllUnfavorite()
+        }
+    }
 }
 
 // MARK: - PostsDataSourceDelegate methods implementation
 
 @MainActor
 extension PostsTableViewController: PostsDataSourceDelegate {
-    func presentAlert(with title: String, message: String) {
-        os_log(.error, log: log, "\n++++++\nPresent error with title:\n%{public}@\nMessage:\n%{public}@\n++++++\n", title, message)
+    func presentAlert(with title: String, message: String, completion: (() -> Void)?) {
+        os_log(.error, log: log, "\n++++++\nPresent alert with title:\n%{public}@\nMessage:\n%{public}@\n++++++\n", title, message)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let action = UIAlertAction(title: "OK", style: .default, handler: { _ in
+            completion?()
+        })
+        alert.addAction(action)
         present(alert, animated: true)
     }
     

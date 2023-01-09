@@ -75,7 +75,7 @@ class PostDetailTableViewController: BaseTableViewController {
 @MainActor
 extension PostDetailTableViewController: PostDetailsDataSourceDelegate {
     func presentAlert(with title: String, message: String) {
-        os_log(.error, log: log, "\n++++++\nPresent error with title:\n%{public}@\nMessage:\n%{public}@\n++++++\n", title, message)
+        os_log(.error, log: log, "\n++++++\nPresent alert with title:\n%{public}@\nMessage:\n%{public}@\n++++++\n", title, message)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)

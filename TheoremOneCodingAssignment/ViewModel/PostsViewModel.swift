@@ -67,6 +67,28 @@ struct PostsViewModel {
         let post = posts.remove(at: index.row)
         posts.insert(post, at: moveIndex.row)
     }
+    
+    mutating func deletePost(at index: IndexPath) -> Post {
+        if posts[index.row].isFavorite {
+            lastFavoriteIndex -= 1
+        }
+        return posts.remove(at: index.row).post
+    }
+    
+    mutating func deleteUnfavoritePosts() -> [Post] {
+        if lastFavoriteIndex == -1 {
+            let postsToDelete = posts.compactMap { $0.post }
+            posts = []
+            return postsToDelete
+        }
+        let slice = posts.suffix(from: lastFavoriteIndex + 1).compactMap { $0.post }
+        var elementsForDelete = posts.count - lastFavoriteIndex - 1
+        while elementsForDelete > 0 {
+            let _ = posts.popLast()
+            elementsForDelete -= 1
+        }
+        return slice
+    }
 }
 
 private extension PostsViewModel {
@@ -76,7 +98,7 @@ private extension PostsViewModel {
     
     func findUnfavoriteInsertIndex(for model: ViewModel) -> Int {
         guard let index = posts.firstIndex(where: { $0.isFavorite == false && $0.post.id > model.post.id }) else {
-            return posts.count
+            return posts.count - 1
         }
         return index - 1
     }
@@ -102,7 +124,7 @@ extension PostsViewModel {
         }
         
         var postTitle: String {
-            post.title + "___ \(post.id)"
+            post.title
         }
         
         var favoriteIcon: String {
@@ -118,4 +140,3 @@ extension PostsViewModel {
         }
     }
 }
-
