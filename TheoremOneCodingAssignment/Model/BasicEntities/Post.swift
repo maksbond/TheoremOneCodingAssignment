@@ -17,7 +17,7 @@
  - Author: Maksym Bondar
  - version: 1.0.0
  */
-struct Post: Decodable {
+struct Post: Decodable, Equatable {
     let userId: UInt64
     let id: UInt64
     let title: String

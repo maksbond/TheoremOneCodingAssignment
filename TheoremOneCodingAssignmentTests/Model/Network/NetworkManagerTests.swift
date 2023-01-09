@@ -1,14 +1,14 @@
 //
-//  TheoremOneCodingAssignmentTests.swift
+//  NetworkManagerTests.swift
 //  TheoremOneCodingAssignmentTests
 //
-//  Created by Maksym Bondar on 07.01.2023.
+//  Created by Maksym Bondar on 09.01.2023.
 //
 
 import XCTest
 @testable import TheoremOneCodingAssignment
 
-final class TheoremOneCodingAssignmentTests: XCTestCase {
+final class NetworkManagerTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

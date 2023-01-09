@@ -19,7 +19,7 @@
  - Author: Maksym Bondar
  - version: 1.0.0
  */
-struct User: Decodable {
+struct User: Decodable, Equatable {
     let id: UInt64
     let name: String
     let username: String
