@@ -1,5 +1,5 @@
 //
-//  PostViewModel.swift
+//  PostDetailViewModel.swift
 //  TheoremOneCodingAssignment
 //
 //  Created by Maksym Bondar on 08.01.2023.

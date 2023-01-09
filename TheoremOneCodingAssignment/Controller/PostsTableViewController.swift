@@ -96,4 +96,8 @@ extension PostsTableViewController: PostsDataSourceDelegate {
         )
         self.navigationController?.pushViewController(postDetailsViewController, animated: true)
     }
+
+    var tableViewElement: UITableView {
+        tableView
+    }
 }
