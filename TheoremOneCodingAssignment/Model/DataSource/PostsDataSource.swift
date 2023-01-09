@@ -10,7 +10,7 @@ import Foundation
 
 @MainActor
 protocol PostsDataSourceDelegate: AnyObject {
-    func presentAlert(with title: String, message: String)
+    func presentAlert(with title: String, message: String, completion: (() -> Void)?)
     func showLoadingIndicator()
     func hideLoadingIndicator()
     func updatePresentedContent()
@@ -47,26 +47,83 @@ class PostsDataSource: NSObject {
                 await self.delegate?.hideLoadingIndicator()
                 await self.delegate?.updatePresentedContent()
             } catch {
-                let title: String
-                let message: String
-                if let error = error as? NetworkManager.NetworkManagerError {
-                    title = "Network Manager"
-                    message = error.description
-                } else {
-                    title = "Unknown"
-                    message = error.localizedDescription
-                }
+                let parameters = alert(for: error)
                 await self.delegate?.hideLoadingIndicator()
                 await self.delegate?.updatePresentedContent()
-                await self.delegate?.presentAlert(with: title, message: message)
+                await self.delegate?.presentAlert(
+                    with: parameters.title,
+                    message: parameters.message,
+                    completion: nil
+                )
             }
         }
+    }
+    
+    func deleteAllUnfavorite() {
+        Task(priority: .userInitiated) {
+            do {
+                guard let posts = postsViewModel?.deleteUnfavoritePosts(),
+                      posts.count > 0
+                else {
+                    return
+                }
+                await delegate?.updatePresentedContent()
+                try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+                    for post in posts {
+                        taskGroup.addTask { try await self.networkManager.delete(post: post) }
+                    }
+                    for try await _ in taskGroup {
+                        // Just checking for all calls to be executed
+                    }
+                }
+            } catch {
+                let parameters = alert(for: error)
+                await self.delegate?.presentAlert(
+                    with: parameters.title,
+                    message: parameters.message,
+                    completion: nil
+                )
+            }
+        }
+    }
+    
+    /// Call API to delete post
+    private func delete(post: Post) {
+        Task(priority: .userInitiated) {
+            do {
+                try await self.networkManager.delete(post: post)
+            } catch {
+                let parameters = alert(for: error)
+                await self.delegate?.presentAlert(
+                    with: parameters.title,
+                    message: parameters.message,
+                    completion: nil
+                )
+            }
+        }
+    }
+    
+    /**
+     Generate alert title and message
+     - returns: Tuple with title and message parameters
+     */
+    private func alert(for error: Error) -> (title: String, message: String) {
+        let title: String
+        let message: String
+        if let error = error as? NetworkManager.NetworkManagerError {
+            title = "Network Manager"
+            message = error.description
+        } else {
+            title = "Unknown"
+            message = error.localizedDescription
+        }
+        return (title, message)
     }
 }
 
 extension PostsDataSource: UIGestureRecognizerDelegate {
     @MainActor @objc
-    func didTapListContentView(_ recognizer: UIGestureRecognizer) {
+    private func didTapListContentView(_ recognizer: UIGestureRecognizer) {
         guard let cell = recognizer.view?.superview as? UITableViewCell,
               let tableView = delegate?.tableViewElement,
               let postIndex = postsViewModel?.postIndex(with: cell.tag),
@@ -75,7 +132,7 @@ extension PostsDataSource: UIGestureRecognizerDelegate {
             return
         }
         tableView.reloadRows(at: [postIndex], with: .none)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             tableView.moveRow(at: postIndex, to: moveIndex)
             self.postsViewModel?.move(from: postIndex, to: moveIndex)
         }
@@ -104,6 +161,16 @@ extension PostsDataSource: UITableViewDelegate {
 extension PostsDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return postsViewModel?.numberOfRows ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            guard let post = postsViewModel?.deletePost(at: indexPath) else {
+                return
+            }
+            delete(post: post)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
