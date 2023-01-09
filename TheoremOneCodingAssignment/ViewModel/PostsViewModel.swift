@@ -9,12 +9,11 @@ import Foundation
 import UIKit
 
 struct PostsViewModel {
-    var posts: [ViewModel]
+    private var posts: [ViewModel]
     private var lastFavoriteIndex = -1
     
     init(posts: [Post]) {
         self.posts = posts.compactMap { ViewModel(post: $0, isFavorite: false) }
-        checkForFavorites()
     }
     
     // MARK: - Methods for data source
@@ -92,10 +91,6 @@ struct PostsViewModel {
 }
 
 private extension PostsViewModel {
-    mutating func checkForFavorites() {
-        
-    }
-    
     func findUnfavoriteInsertIndex(for model: ViewModel) -> Int {
         guard let index = posts.firstIndex(where: { $0.isFavorite == false && $0.post.id > model.post.id }) else {
             return posts.count - 1

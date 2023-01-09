@@ -26,7 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO"
@@ -36,17 +37,6 @@
                BlueprintIdentifier = "7A18763C2969D12B00C55911"
                BuildableName = "TheoremOneCodingAssignmentTests.xctest"
                BlueprintName = "TheoremOneCodingAssignmentTests"
-               ReferencedContainer = "container:TheoremOneCodingAssignment.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7A1876462969D12B00C55911"
-               BuildableName = "TheoremOneCodingAssignmentUITests.xctest"
-               BlueprintName = "TheoremOneCodingAssignmentUITests"
                ReferencedContainer = "container:TheoremOneCodingAssignment.xcodeproj">
             </BuildableReference>
          </TestableReference>

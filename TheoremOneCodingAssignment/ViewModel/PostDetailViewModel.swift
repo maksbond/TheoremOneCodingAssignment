@@ -9,8 +9,8 @@ import Foundation
 
 struct PostDetailViewModel {
     let post: Post
-    var user: User?
-    var comments: [Comment]?
+    private var user: User?
+    private var comments: [Comment]?
     
     init(post: Post, user: User? = nil, comments: [Comment]? = nil) {
         self.post = post
@@ -82,7 +82,7 @@ struct PostDetailViewModel {
 }
 
 extension PostDetailViewModel {
-    enum ViewModel: CaseIterable {
+    enum ViewModel: CaseIterable, Equatable {
         case post(title: String, description: String)
         case author(name: String, email: String)
         case comment(authorName: String, description: String)

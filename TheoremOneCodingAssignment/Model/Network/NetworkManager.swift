@@ -162,7 +162,11 @@ private extension NetworkManager {
 // MARK: - NetworkManagerError
 
 extension NetworkManager {
-    enum NetworkManagerError: Error, CustomStringConvertible {
+    enum NetworkManagerError: Error, CustomStringConvertible, Equatable {
+        static func == (lhs: NetworkManager.NetworkManagerError, rhs: NetworkManager.NetworkManagerError) -> Bool {
+            return lhs.description == rhs.description
+        }
+        
         case invalidURL
         case invalidResponseConverting
         case invalidStatusCode
