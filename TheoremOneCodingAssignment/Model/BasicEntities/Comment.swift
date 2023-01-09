@@ -17,7 +17,7 @@
  - Author: Maksym Bondar
  - version: 1.0.0
  */
-struct Comment: Decodable {
+struct Comment: Decodable, Equatable {
     let postId: UInt64
     let id: UInt64
     let name: String

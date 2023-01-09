@@ -1,5 +1,5 @@
 //
-//  PostsTableViewController.swift
+//  PostDetailTableViewController.swift
 //  TheoremOneCodingAssignment
 //
 //  Created by Maksym Bondar on 07.01.2023.
@@ -8,20 +8,23 @@
 import UIKit
 import os.log
 
-class PostsTableViewController: BaseTableViewController {
+class PostDetailTableViewController: BaseTableViewController {
     // Network Manager
     private var networkManager: NetworkManager!
 
-    // Data source for posts
-    private var postsDataSource: PostsDataSource!
+    // Data source for post details
+    private var postDetailsDataSource: PostDetailsDataSource!
 
     // MARK: - Initializers
     
-    init(networkManager: NetworkManager) {
+    init(
+        networkManager: NetworkManager,
+        post: Post
+    ) {
         super.init()
         self.networkManager = networkManager
-        postsDataSource = PostsDataSource(networkManager: networkManager)
-        postsDataSource.delegate = self
+        postDetailsDataSource = PostDetailsDataSource(networkManager: networkManager, post: post)
+        postDetailsDataSource.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -32,57 +35,49 @@ class PostsTableViewController: BaseTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        postsDataSource.fetchPosts()
+        postDetailsDataSource.fetchPostDetails()
     }
     
     override func setupNavigationBar() {
-        navigationItem.title = "Posts"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(deleteUnfavorite))
+        navigationItem.title = "Details"
     }
     
     deinit {
-        postsDataSource = nil
+        postDetailsDataSource = nil
         networkManager = nil
     }
     
     // MARK: - Overrided methods
     override func loggerCategory() -> String {
-        "PostsTableViewController"
+        "PostDetailTableViewController"
     }
 
     override func delegate() -> UITableViewDelegate? {
-        postsDataSource
+        postDetailsDataSource
     }
 
     override func dataSource() -> UITableViewDataSource? {
-        postsDataSource
+        postDetailsDataSource
     }
     
     override func cellIdentifiers() -> [String : UITableViewCell.Type] {
-        [PostsDataSource.cellIdentifier: UITableViewCell.self]
+        postDetailsDataSource.cellIdentifiers
     }
-    
-    // MARK: - Bar button actions
-    
-    @objc
-    func deleteUnfavorite() {
-        presentAlert(with: "Delete all unfavorite posts", message: "You will delete all unfavorite posts") { [weak self] in
-            self?.postsDataSource.deleteAllUnfavorite()
-        }
+
+    override func setupUI() {
+        super.setupUI()
+        tableView.allowsSelection = false
     }
 }
 
 // MARK: - PostsDataSourceDelegate methods implementation
 
 @MainActor
-extension PostsTableViewController: PostsDataSourceDelegate {
-    func presentAlert(with title: String, message: String, completion: (() -> Void)?) {
+extension PostDetailTableViewController: PostDetailsDataSourceDelegate {
+    func presentAlert(with title: String, message: String) {
         os_log(.error, log: log, "\n++++++\nPresent alert with title:\n%{public}@\nMessage:\n%{public}@\n++++++\n", title, message)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default, handler: { _ in
-            completion?()
-        })
-        alert.addAction(action)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
     
@@ -100,17 +95,5 @@ extension PostsTableViewController: PostsDataSourceDelegate {
     func updatePresentedContent() {
         os_log(.info, log: log, "\n++++++\nReload table view\n++++++\n")
         tableView.reloadData()
-    }
-    
-    func presentDetails(for post: Post) {
-        let postDetailsViewController = PostDetailTableViewController(
-            networkManager: networkManager,
-            post: post
-        )
-        self.navigationController?.pushViewController(postDetailsViewController, animated: true)
-    }
-
-    var tableViewElement: UITableView {
-        tableView
     }
 }
